@@ -11,10 +11,3 @@ testpaths = [
 [tool.mypy]
 mypy_path = "src"
 check_untyped_defs = true
-
-
-[[tool.mypy.overrides]]
-module = [
-    # add modules and packages to exclude
-]
-ignore_missing_imports = true
