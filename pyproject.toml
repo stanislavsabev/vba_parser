@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=49.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+addopts = "--cov=vba_parser"
+testpaths = [
+    "tests",
+]
+
+[tool.mypy]
+mypy_path = "src"
+check_untyped_defs = true
+
+
+[[tool.mypy.overrides]]
+module = [
+    # add modules and packages to exclude
+]
+ignore_missing_imports = true
