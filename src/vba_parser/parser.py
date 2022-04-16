@@ -2,12 +2,14 @@
 
 
 from typing import Dict, Any
-import re
 
-from vba_parser import spec
+from vba_parser import tokenizer
 
 
 class Parser:
+
+    def __init__(self) -> None:
+        self._tokenizer = tokenizer.Tokenizer()
 
     def parse(self, input_str: str) -> Dict[str, Any]:
         """Parse statements list.
@@ -18,9 +20,8 @@ class Parser:
         Returns:
             A dict representing the AST tree.
         """
-
-        value = re.match(spec.Number, input_str)
+        value = self._tokenizer.Number(input_str)
         return dict(
             type='Number',
-            value=int(value.string),
+            value=value,
         )

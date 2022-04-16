@@ -3,6 +3,11 @@
 from vba_parser import parser
 
 
+def test_create():
+    p = parser.Parser()
+    assert p is not None
+
+
 def test_parser_parse_5():
     """Test start.here."""
     p = parser.Parser()
