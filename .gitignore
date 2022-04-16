@@ -2,6 +2,7 @@
 .ignore/
 .vscode/
 .env
+pip-wheel-metatada/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
