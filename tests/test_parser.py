@@ -1,6 +1,8 @@
 """Test start module."""
 
-from vba_parser import parser
+import pytest
+
+from vba_parser import parser, tokenizer
 
 
 def test_create():
@@ -8,12 +10,34 @@ def test_create():
     assert p is not None
 
 
-def test_parser_parse_5():
-    """Test start.here."""
+def test_numeric_literal(random_positive_int):
+    """Test numeric literal."""
+    number = random_positive_int
     p = parser.Parser()
-    actual = p.parse('5')
-    expected = {
-        "type": "Number",
-        "value": 5,
-    }
+    lookahead = tokenizer.Token(type='NUMBER', value=number)
+    p._lookahead = lookahead
+    actual = p.numeric_literal()
+    expected = dict(
+        type="NumericLiteral",
+        value=number,
+    )
+    assert actual == expected
+
+
+@pytest.mark.parametrize(
+    'code, program_contents',
+    [
+        ('5', dict(type='NumericLiteral', value=5)),
+        ('"abc"', dict(type='StringLiteral', value='abc')),
+        ('"5"', dict(type='StringLiteral', value='5')),
+    ]
+)
+def test_parse_program(code, program_contents):
+    """Test program."""
+    p = parser.Parser()
+    actual = p.parse(code)
+    expected = dict(
+        type="Program",
+        value=program_contents
+    )
     assert actual == expected
