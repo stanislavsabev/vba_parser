@@ -30,7 +30,7 @@ class Parser:
     def program(self):
         """Program AST."""
         return dict(
-            type='Program',
+            type='program',
             value=self.literal())
 
     # literal

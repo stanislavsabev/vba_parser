@@ -19,19 +19,19 @@ def test_create():
 
 
 @pytest.mark.parametrize(
-    'code, token',
+    'code, program_value',
     [
         ('5', dict(type='numeric_literal', value=5)),
         ('"abc"', dict(type='string_literal', value='"abc"')),
         ('"5"', dict(type='string_literal', value='"5"')),
     ]
 )
-def test_parse_program(parser_fixture, code, token):
+def test_parse(parser_fixture, code, program_value):
     """Test program."""
     actual = parser_fixture.parse(code)
     expected = dict(
-        type="Program",
-        value=token
+        type="program",
+        value=program_value
     )
     assert actual == expected
 
