@@ -2,14 +2,14 @@
 
 from typing import Dict, Any
 
-from vba_parser import tokenizer
+from vba_parser import tokenizer as tk
 
 
 class Parser:
 
     def __init__(self) -> None:
-        self._tokenizer = tokenizer.Tokenizer()
-        self._lookahead: tokenizer.Token = None
+        self._tokenizer = tk.Tokenizer()
+        self._lookahead: tk.Token = tk.EOF_TOKEN
 
     def parse(self, string: str) -> Dict[str, Any]:
         """Parse statements list.
@@ -45,7 +45,6 @@ class Parser:
         else:
             raise SyntaxError('Unexpected literal production.')
 
-
     def numeric_literal(self):
         """Numeric literal AST"""
         token = self._consume('NUMBER')
@@ -63,9 +62,9 @@ class Parser:
         )
         return result
 
-    def _consume(self, token_type: str) -> tokenizer.Token:
+    def _consume(self, token_type: str) -> tk.Token:
         token = self._lookahead
-        if token is None:
+        if token is tk.EOF_TOKEN:
             raise SyntaxError(f'Unexpected end of input, expected: {token_type}')
         if token.type != token_type:
             raise SyntaxError(

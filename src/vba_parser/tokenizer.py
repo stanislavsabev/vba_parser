@@ -1,6 +1,5 @@
 """A tokenizer to pull and categorize the lexical syntax of a VBA code."""
 import re
-from typing import Optional
 from collections import namedtuple
 from vba_parser import spec
 
@@ -10,6 +9,7 @@ class UnknownTokenError(Exception):
 
 
 Token = namedtuple('Token', ['type', 'value'], defaults=['', None])
+EOF_TOKEN = Token(type='EOF', value=None)
 
 
 class Tokenizer:
@@ -36,7 +36,7 @@ class Tokenizer:
         """Return `True`, unless the end if input is reached."""
         return self._cursor < len(self._string)
 
-    def next_token(self) -> Optional[Token]:
+    def next_token(self) -> Token:
         """Match next token accorting to the spec.
 
         Returns:
@@ -46,7 +46,7 @@ class Tokenizer:
             UnknownTokenError if no token is matched.
         """
         if not self.has_more_tokens():
-            return None
+            return EOF_TOKEN
         string = self._string[self._cursor:]
 
         # Match Number
@@ -57,15 +57,12 @@ class Tokenizer:
         match = re.match(spec.String, string)
         if match:
             return self.string_token(match.string)
-
-
         raise UnknownTokenError(f'Unknown token at {self._cursor}')
 
-    def number_token(self, string) -> int:
+    def number_token(self, string) -> Token:
         """Parse a `NUMBER` token."""
         return Token(type='NUMBER', value=int(string))
 
-    def string_token(self, string) -> str:
+    def string_token(self, string) -> Token:
         """Parse a `STRING` token."""
         return Token(type='STRING', value=string)
-        
