@@ -25,7 +25,27 @@ def test_init(tokenizer_fixture):
     assert sut._string == 'abc'
     assert sut.has_more_tokens()
 
-
-def test_number(tokenizer_fixture, random_positive_int):
+def test_number_token(tokenizer_fixture, random_positive_int):
     """Test the number Token production."""
-    tokenizer_fixture.number(str(random_positive_int))
+    
+    expected = tokenizer.Token(type='NUMBER', value=random_positive_int)
+    actual = tokenizer_fixture.number_token(str(random_positive_int))
+    assert actual == expected
+
+
+@pytest.mark.parametrize('vba_string', [
+    '"hello ""world""!"',
+    '"hello world!"',
+    '"\'"',
+    '""""',
+    '"""a""""sd"""""',
+    '"asdf"',
+])
+def test_number_token(tokenizer_fixture, vba_string):
+    """Test the string Token production."""
+    
+    expected = tokenizer.Token(type='STRING', value=vba_string)
+    actual = tokenizer_fixture.string_token(str(vba_string))
+    assert actual == expected
+
+

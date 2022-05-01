@@ -24,19 +24,44 @@ class Parser:
         self._lookahead = self._tokenizer.next_token()
         return self.program()
 
+    # program
+    #   : literal
+    #   ;
     def program(self):
         """Program AST."""
         return dict(
             type='Program',
-            value=self.numeric_literal())
+            value=self.literal())
+
+    # literal
+    #   : numeric_literal
+    #   | string_literal
+    #   ;
+    def literal(self):
+        if self._lookahead.type == 'NUMBER':
+            return self.numeric_literal()
+        elif self._lookahead.type == 'STRING':
+            return self.string_literal()
+        else:
+            raise SyntaxError('Unexpected literal production.')
+
 
     def numeric_literal(self):
         """Numeric literal AST"""
         token = self._consume('NUMBER')
         return dict(
-            type='NumericLiteral',
+            type='numeric_literal',
             value=token.value,
         )
+
+    def string_literal(self):
+        """Numeric literal AST"""
+        token = self._consume('STRING')
+        result = dict(
+            type='string_literal',
+            value=token.value,
+        )
+        return result
 
     def _consume(self, token_type: str) -> tokenizer.Token:
         token = self._lookahead

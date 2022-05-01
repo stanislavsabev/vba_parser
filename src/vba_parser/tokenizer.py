@@ -52,10 +52,20 @@ class Tokenizer:
         # Match Number
         match = re.match(spec.Number, string)
         if match:
-            return self.number(match.string)
+            return self.number_token(match.string)
+
+        match = re.match(spec.String, string)
+        if match:
+            return self.string_token(match.string)
+
 
         raise UnknownTokenError(f'Unknown token at {self._cursor}')
 
-    def number(self, string) -> int:
+    def number_token(self, string) -> int:
         """Parse a `NUMBER` token."""
         return Token(type='NUMBER', value=int(string))
+
+    def string_token(self, string) -> str:
+        """Parse a `STRING` token."""
+        return Token(type='STRING', value=string)
+        
