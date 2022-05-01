@@ -58,7 +58,7 @@ class Parser:
         token = self._consume('STRING')
         result = dict(
             type='string_literal',
-            value=token.value,
+            value=token.value[1: -1],
         )
         return result
 

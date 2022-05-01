@@ -22,8 +22,8 @@ def test_create():
     'code, program_value',
     [
         ('5', dict(type='numeric_literal', value=5)),
-        ('"abc"', dict(type='string_literal', value='"abc"')),
-        ('"5"', dict(type='string_literal', value='"5"')),
+        ('"abc"', dict(type='string_literal', value='abc')),
+        ('"5"', dict(type='string_literal', value='5')),
     ]
 )
 def test_parse(parser_fixture, code, program_value):
@@ -68,7 +68,7 @@ def test_string_literal(parser_fixture, string):
     actual = p.string_literal()
     expected = dict(
         type="string_literal",
-        value=string,
+        value=string[1: -1],
     )
     assert actual == expected
 
