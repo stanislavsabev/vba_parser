@@ -28,8 +28,9 @@ def test_init():
 
 def test_number_token(tokenizer_fixture, random_positive_int):
     """Test the number Token production."""
-    expected = tokenizer.Token(type='NUMBER', value=random_positive_int)
-    actual = tokenizer_fixture.number_token(str(random_positive_int))
+    expected = tokenizer.Token(type='NUMBER', value=str(random_positive_int))
+    tokenizer_fixture.init(str(random_positive_int))
+    actual = tokenizer_fixture.next_token()
     assert actual == expected
 
 
@@ -40,9 +41,11 @@ def test_number_token(tokenizer_fixture, random_positive_int):
     '""""',
     '"""a""""sd"""""',
     '"asdf"',
+    '"ABC" ',
 ])
 def test_string_token(tokenizer_fixture, vba_string):
     """Test the string Token production."""
     expected = tokenizer.Token(type='STRING', value=vba_string)
-    actual = tokenizer_fixture.string_token(str(vba_string))
+    tokenizer_fixture.init(vba_string)
+    actual = tokenizer_fixture.next_token()
     assert actual == expected

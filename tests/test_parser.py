@@ -24,6 +24,18 @@ def test_create():
         ('5', dict(type='numeric_literal', value=5)),
         ('"abc"', dict(type='string_literal', value='abc')),
         ('"5"', dict(type='string_literal', value='5')),
+        (pytest.param('" "', dict(type='string_literal', value='5'),
+                      marks=pytest.mark.xfail(raises=AssertionError))),
+        (pytest.param('5', dict(type='string_literal', value='5'),
+                      marks=pytest.mark.xfail(raises=AssertionError))),
+        (pytest.param('" "', dict(type='numeric_literal', value=5),
+                      marks=pytest.mark.xfail(raises=AssertionError))),
+        (pytest.param('"1"', dict(type='numeric_literal', value=1),
+                      marks=pytest.mark.xfail(raises=AssertionError))),
+        (pytest.param('1"', dict(type='numeric_literal', value=1),
+                      marks=pytest.mark.xfail(raises=tk.UnknownTokenError))),
+        (pytest.param('"1', dict(type='numeric_literal', value=1),
+                      marks=pytest.mark.xfail(raises=tk.UnknownTokenError))),
     ]
 )
 def test_parse(parser_fixture, code, program_value):
@@ -40,7 +52,7 @@ def test_numeric_literal(parser_fixture, random_positive_int):
     """Test numeric literal."""
     p = parser_fixture
     number = random_positive_int
-    p._lookahead = tk.Token(type='NUMBER', value=number)
+    p._lookahead = tk.Token(type='NUMBER', value=str(number))
     actual = p.numeric_literal()
     expected = dict(
         type="numeric_literal",
