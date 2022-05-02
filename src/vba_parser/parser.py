@@ -50,7 +50,7 @@ class Parser:
         token = self._consume('NUMBER')
         return dict(
             type='numeric_literal',
-            value=token.value,
+            value=int(token.value),
         )
 
     def string_literal(self):

@@ -1,6 +1,7 @@
 """A tokenizer to pull and categorize the lexical syntax of a VBA code."""
 import re
 from collections import namedtuple
+from typing import Optional
 from vba_parser import spec
 
 
@@ -43,30 +44,24 @@ class Tokenizer:
             A Token, or None, if the end of input is reached.
 
         Raises:
-            UnknownTokenError if no token is matched.
+            UnknownTokenError if none of the supported tokens is matched.
         """
         if not self.has_more_tokens():
             return EOF_TOKEN
-        string = self._string[self._cursor:]
 
+        for token_type, regex in spec.SPEC:
+            token = self._match(token_type, regex)
+            if token is None:
+                continue
+            return token
+        raise UnknownTokenError(f'Unknown token at position {self._cursor}')
+
+    def _match(self, token_type, regex) -> Optional[Token]:
         # Match Number
-        match = re.match(spec.Number, string)
+        string = self._string[self._cursor:]
+        match = re.match(regex, string)
         if match:
-            string = match.string[match.start():match.end()]
-            self._cursor += match.end()
-            return self.number_token(string)
-
-        match = re.match(spec.String, string)
-        if match:
-            string = match.string[match.start():match.end()]
-            self._cursor += match.end()
-            return self.string_token(string)
-        raise UnknownTokenError(f'Token at {self._cursor}')
-
-    def number_token(self, string) -> Token:
-        """Parse a `NUMBER` token."""
-        return Token(type='NUMBER', value=int(string))
-
-    def string_token(self, string) -> Token:
-        """Parse a `STRING` token."""
-        return Token(type='STRING', value=string)
+            self._cursor += len(match.group(0))
+            return Token(type=token_type, value=match.group(0))
+        else:
+            return None
