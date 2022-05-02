@@ -14,6 +14,7 @@ def parser_fixture() -> parser.Parser:
 
 
 def test_create():
+    """Can create Parser"""
     p = parser.Parser()
     assert p is not None
 
@@ -39,7 +40,7 @@ def test_create():
     ]
 )
 def test_parse(parser_fixture, code, program_value):
-    """Test program."""
+    """Test parse a program."""
     actual = parser_fixture.parse(code)
     expected = dict(
         type="program",
@@ -75,6 +76,7 @@ def test_numeric_literal(parser_fixture, random_positive_int):
     pytest.param('"""asdf"""', marks=pytest.mark.xfail),
 ])
 def test_string_literal(parser_fixture, string):
+    """Test string literal."""
     p = parser_fixture
     p._lookahead = tk.Token(type='STRING', value=string)
     actual = p.string_literal()
@@ -91,7 +93,7 @@ def test_string_literal(parser_fixture, string):
     ('STRING', '"5"'),
 ])
 def test_consume_calls_next_token(parser_fixture, token_type, token_value):
-    """Parser consume to call next token after it consumes valid token."""
+    """`_`consume` to get next token after it consumes a valid token."""
     p = parser_fixture
     lookahead_mock = MagicMock()
     lookahead_mock.type = token_type
@@ -106,8 +108,9 @@ def test_consume_calls_next_token(parser_fixture, token_type, token_value):
 
 @mock.patch.object(tk.Tokenizer, 'next_token')
 def test_consume_raises_on_eof_token(next_token_mock, parser_fixture):
+    """`_consume` to raise `SyntaxError` if it encounters 'End of file' token."""
     p = parser_fixture
     p._lookahead = tk.EOF_TOKEN
-    with pytest.raises(SyntaxError, match=r'Unexpected end of input'):
+    with pytest.raises(SyntaxError, match='Unexpected end of input'):
         p._consume('STRING')
     next_token_mock.assert_not_called()

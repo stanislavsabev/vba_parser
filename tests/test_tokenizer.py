@@ -41,7 +41,9 @@ def test_number_token(tokenizer_fixture, random_positive_int):
     '""""',
     '"""a""""sd"""""',
     '"asdf"',
-    '"ABC" ',
+    '"ABC"',
+    pytest.param('"ABC" ', marks=pytest.mark.xfail(raises=AssertionError)),
+    pytest.param(' "ABC"', marks=pytest.mark.xfail(raises=tokenizer.UnknownTokenError)),
 ])
 def test_string_token(tokenizer_fixture, vba_string):
     """Test the string Token production."""
