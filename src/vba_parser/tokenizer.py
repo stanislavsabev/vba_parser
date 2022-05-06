@@ -53,13 +53,15 @@ class Tokenizer:
             token = self._match(token_type, regex)
             if token is None:
                 continue
+            if token.type in ['COMMENT', 'WHITESPACE']:
+                return self.next_token()
             return token
         raise UnknownTokenError(f'Unknown token at position {self._cursor}')
 
     def _match(self, token_type, regex) -> Optional[Token]:
         # Match Number
         string = self._string[self._cursor:]
-        match = re.match(regex, string)
+        match = re.match(regex, string, re.ASCII)
         if match:
             self._cursor += len(match.group(0))
             return Token(type=token_type, value=match.group(0))

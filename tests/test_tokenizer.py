@@ -34,7 +34,7 @@ def test_number_token(tokenizer_fixture, random_positive_int):
     assert actual == expected
 
 
-@pytest.mark.parametrize('vba_string', [
+@pytest.mark.parametrize('token', [
     '"hello ""world""!"',
     '"hello world!"',
     '"\'"',
@@ -45,9 +45,42 @@ def test_number_token(tokenizer_fixture, random_positive_int):
     pytest.param('"ABC" ', marks=pytest.mark.xfail(raises=AssertionError)),
     pytest.param(' "ABC"', marks=pytest.mark.xfail(raises=tokenizer.UnknownTokenError)),
 ])
-def test_string_token(tokenizer_fixture, vba_string):
+def test_string_token(tokenizer_fixture, token):
     """Test the string Token production."""
-    expected = tokenizer.Token(type='STRING', value=vba_string)
-    tokenizer_fixture.init(vba_string)
+    expected = tokenizer.Token(type='STRING', value=token)
+    tokenizer_fixture.init(token)
+    actual = tokenizer_fixture.next_token()
+    assert actual == expected
+
+
+@pytest.mark.parametrize('token', [
+    "'hello world",
+    "' hello world  ",
+    "'    12345_!@><?\"''''  ",
+    pytest.param(" '", marks=pytest.mark.xfail(raises=AssertionError)),
+    pytest.param("3'", marks=pytest.mark.xfail(raises=AssertionError)),
+    pytest.param("A'", marks=pytest.mark.xfail(raises=tokenizer.UnknownTokenError)),
+])
+def test_comment_token(tokenizer_fixture, token):
+    """Test the comment Token production."""
+    expected = tokenizer.EOF_TOKEN
+    tokenizer_fixture.init(token)
+    actual = tokenizer_fixture.next_token()
+    assert actual == expected
+
+
+@pytest.mark.parametrize('token', [
+    " ",
+    " " * 10,
+    "\t",
+    "\r\n\t\f\v ",
+    pytest.param("'", marks=pytest.mark.xfail(raises=AssertionError)),
+    pytest.param("3", marks=pytest.mark.xfail(raises=AssertionError)),
+    pytest.param("A", marks=pytest.mark.xfail(raises=tokenizer.UnknownTokenError)),
+])
+def test_witespace_token(tokenizer_fixture, token):
+    """Test the witespace Token production."""
+    expected = tokenizer.Token(type='WHITESPACE', value=token)
+    tokenizer_fixture.init(token)
     actual = tokenizer_fixture.next_token()
     assert actual == expected
