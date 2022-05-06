@@ -38,7 +38,7 @@ class Parser:
     #   | string_literal
     #   ;
     def literal(self):
-        if self._lookahead.type == 'NUMBER':
+        if self._lookahead.type == 'INTEGER':
             return self.numeric_literal()
         elif self._lookahead.type == 'STRING':
             return self.string_literal()
@@ -47,7 +47,7 @@ class Parser:
 
     def numeric_literal(self):
         """Numeric literal AST"""
-        token = self._consume('NUMBER')
+        token = self._consume('INTEGER')
         return dict(
             type='numeric_literal',
             value=int(token.value),

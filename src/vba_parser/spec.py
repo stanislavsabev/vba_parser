@@ -2,6 +2,8 @@
 
 
 SPEC = [
-    ('NUMBER', r'^\d+'),
+    ('INTEGER', r'^\d+'),
     ('STRING', r'^\"(?:\"\"|[^\"])*\"'),
+    ('WHITESPACE', r'^\s+'),
+    ('COMMENT', r'^\'.*$'),
 ]
